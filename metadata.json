@@ -1,0 +1,6 @@
+{
+  "name": "PlacementPortal - Kinetic Logic",
+  "description": "Full-stack campus placement platform featuring ATS resume analysis, job matching, AI mentor chat, mock interview simulation, multi-platform coding profile aggregation & analysis (LeetCode, Coding Ninjas, HackerRank, GFG, Codeforces, CodeChef), and TPO analytics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
