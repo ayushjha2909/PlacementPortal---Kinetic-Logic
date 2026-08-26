@@ -326,8 +326,8 @@ export default function App() {
             <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
               <div className="flex items-center gap-2.5">
                 <span className="font-semibold text-slate-800 text-xs tracking-tight flex items-center gap-2">
-                  <span className="w-5 h-5 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-[10px] font-bold shadow-sm">K</span>
-                  Kinetic Placement Portal
+                  <span className="w-5 h-5 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-[10px] font-bold shadow-sm">P</span>
+                  PlacementPortal
                 </span>
                 <span className="text-slate-300">•</span>
                 <span className="text-slate-500">

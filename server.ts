@@ -2208,7 +2208,7 @@ Evaluate candidate rating (0-100), placement readiness tier, cross-platform perc
 
   // Start HTTP Server immediately
   app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Kinetic Logic PlacementPortal server running on http://localhost:${PORT}`);
+    console.log(`PlacementPortal server running on http://localhost:${PORT}`);
     // Ensure database has default placement drives & demo accounts seeded in background
     seedInitialDataIfNeeded().catch((seedErr) => {
       console.warn('[Seed] Background initial seed notice:', seedErr?.message);

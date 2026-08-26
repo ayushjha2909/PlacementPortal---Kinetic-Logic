@@ -1156,7 +1156,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             <div className="w-6 h-6 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-[10px] font-bold">
               KP
             </div>
-            <span className="font-bold text-slate-800 text-xs">Kinetic Placement Portal</span>
+            <span className="font-bold text-slate-800 text-xs">PlacementPortal</span>
             <span className="text-slate-300">•</span>
             <span>University Career Services &amp; Recruitment Management System</span>
           </div>

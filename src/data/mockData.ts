@@ -97,7 +97,7 @@ Software Engineering Intern | CloudScale Technologies | Jun 2024 – Aug 2024
 • Collaborated with senior engineers in daily standups and agile sprint reviews.
 
 PROJECTS
-Kinetic Placement Portal & ATS Engine | React, Express, PostgreSQL, AI SDK
+Campus Placement Portal & ATS Engine | React, Express, PostgreSQL, AI SDK
 • Developed full-stack placement portal enabling students to parse resumes and practice mock technical rounds.
 • Integrated LLM-based structured evaluation with STAR rubric scoring and real-time feedback.
 • Implemented role-based access control (RBAC) separating student and TPO administrative dashboards.
