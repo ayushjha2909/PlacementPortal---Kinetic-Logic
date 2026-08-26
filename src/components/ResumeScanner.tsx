@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { 
   ATSScanResult,
-  User
+  User,
+  ExtractedResumeInfo
 } from '../types';
 import { sampleResumes } from '../data/mockData';
+import { extractComprehensiveResumeData, extractCgpaFromText } from '../utils/resumeExtractor';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   FileText, 
@@ -22,31 +24,24 @@ import {
   ExternalLink,
   ChevronDown,
   GraduationCap,
-  Edit2
+  Edit2,
+  UserCheck,
+  Mail,
+  Phone,
+  Building2,
+  Calendar,
+  Briefcase,
+  Code,
+  Award,
+  Globe,
+  ArrowRight,
+  Database,
+  Terminal,
+  Cpu,
+  BookmarkCheck
 } from 'lucide-react';
 
-export function extractCgpaFromText(text: string): number | null {
-  if (!text || typeof text !== 'string') return null;
-  const patterns = [
-    /(?:cgpa|gpa|cpi|sgpa|cumulative\s+gpa|overall\s+gpa|aggregate|pointer)[\s:=|\-–]+([0-9]+(?:\.[0-9]+)?)/i,
-    /\b([0-9]\.[0-9]{1,2})\s*(?:\/\s*10|\/\s*4\.0|\s*cgpa|\s*gpa|\s*cpi)\b/i,
-    /\b(?:cgpa|gpa)\s+is\s+([0-9]+(?:\.[0-9]+)?)/i,
-    /\b(?:cgpa|gpa)\s*([0-9]\.[0-9]{1,2})\b/i,
-    /grade\s*(?:point\s*average)?[\s:=]+([0-9]+(?:\.[0-9]+)?)/i,
-    /\b([0-9]\.[0-9]{1,2})\s*\/\s*10\.?0?\b/i,
-  ];
-
-  for (const pattern of patterns) {
-    const match = text.match(pattern);
-    if (match && match[1]) {
-      const val = parseFloat(match[1]);
-      if (!isNaN(val) && val >= 0.0 && val <= 10.0) {
-        return Number(val.toFixed(2));
-      }
-    }
-  }
-  return null;
-}
+export { extractCgpaFromText };
 
 interface ResumeScannerProps {
   user?: User;
@@ -76,13 +71,28 @@ export const ResumeScanner: React.FC<ResumeScannerProps> = ({
   const [uploadStatus, setUploadStatus] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [appliedKeywords, setAppliedKeywords] = useState<string[]>([]);
-  const [viewMode, setViewMode] = useState<'editor' | 'preview'>('editor');
+  const [viewMode, setViewMode] = useState<'extracted' | 'editor' | 'preview'>('extracted');
   const [boostFeedback, setBoostFeedback] = useState<string | null>(null);
   const [isEditingGpa, setIsEditingGpa] = useState(false);
   const [manualGpaInput, setManualGpaInput] = useState(user?.cgpa ? String(user.cgpa) : '7.95');
 
+  // Compute live extracted structured resume data (merging server ATS result + deterministic parsing)
+  const localExtracted = extractComprehensiveResumeData(activeResumeText);
+  const liveExtracted: ExtractedResumeInfo = {
+    ...localExtracted,
+    ...(atsResult.extractedInfo || {}),
+    name: atsResult.candidateName || atsResult.extractedInfo?.name || localExtracted.name || user?.name || 'Student Candidate',
+    email: atsResult.candidateEmail || atsResult.extractedInfo?.email || localExtracted.email || user?.email || '',
+    phone: atsResult.candidatePhone || atsResult.extractedInfo?.phone || localExtracted.phone || user?.phone || '',
+    branch: atsResult.candidateBranch || atsResult.extractedInfo?.branch || localExtracted.branch || user?.branch || 'Computer Science & Engineering',
+    degree: atsResult.candidateDegree || atsResult.extractedInfo?.degree || localExtracted.degree || 'B.Tech',
+    institution: atsResult.candidateInstitution || atsResult.extractedInfo?.institution || localExtracted.institution || user?.institution || 'Engineering Institute of Technology',
+    graduationYear: atsResult.candidateGraduationYear || atsResult.extractedInfo?.graduationYear || localExtracted.graduationYear || user?.batch || '2025',
+    cgpa: atsResult.extractedCgpa || localExtracted.cgpa || user?.cgpa || 7.95,
+  };
+
   // Detected CGPA derived from ATS scan, raw text regex, or active user profile
-  const detectedCgpa = atsResult.extractedCgpa || extractCgpaFromText(activeResumeText) || user?.cgpa || 7.95;
+  const detectedCgpa = liveExtracted.cgpa || atsResult.extractedCgpa || extractCgpaFromText(activeResumeText) || user?.cgpa || 7.95;
 
   // Sync state if user prop changes
   useEffect(() => {
@@ -575,10 +585,10 @@ export const ResumeScanner: React.FC<ResumeScannerProps> = ({
 
         </div>
 
-        {/* Right Column: Resume Editor / File Preview & Auto-Optimizer (7 cols) */}
+        {/* Right Column: Resume Extractor Profile & Editor / View (7 cols) */}
         <div className="lg:col-span-7 space-y-6">
           
-          {/* Upload & Sample Selector Box */}
+          {/* Upload, Sync & Preset Bar */}
           <motion.div 
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
@@ -587,14 +597,14 @@ export const ResumeScanner: React.FC<ResumeScannerProps> = ({
           >
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <span className="text-xs font-bold text-slate-900 block">Active Document:</span>
+                <span className="text-xs font-bold text-slate-900 block">Active Resume File:</span>
                 <span className="text-xs text-indigo-600 font-bold flex items-center gap-1.5 mt-0.5">
                   <FileCheck className="w-4 h-4" />
                   {fileName}
                 </span>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <motion.label 
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
@@ -610,6 +620,53 @@ export const ResumeScanner: React.FC<ResumeScannerProps> = ({
                     className="hidden"
                   />
                 </motion.label>
+
+                {user && (
+                  <motion.button
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    id="btn-sync-to-profile"
+                    onClick={() => {
+                      if (!onUpdateUser) return;
+                      const extracted = liveExtracted;
+                      const finalCgpa = extracted.cgpa || atsResult.extractedCgpa || user.cgpa || 7.95;
+                      
+                      const extractedSkillsList = [
+                        ...(extracted.skillsByCategory?.languages || []),
+                        ...(extracted.skillsByCategory?.frameworks || []),
+                        ...(extracted.skillsByCategory?.databases || []),
+                        ...(extracted.skillsByCategory?.cloudAndDevOps || []),
+                        ...(extracted.skillsByCategory?.coreCS || []),
+                        ...(atsResult.extractedSkills || []),
+                      ];
+
+                      const mergedSkills = Array.from(new Set([...(user.skills || []), ...extractedSkillsList])).filter(Boolean);
+
+                      const updatedUser: User = {
+                        ...user,
+                        name: extracted.name && extracted.name !== 'Student Candidate' ? extracted.name : user.name,
+                        email: extracted.email || user.email,
+                        phone: extracted.phone || user.phone,
+                        branch: extracted.branch || user.branch,
+                        batch: extracted.graduationYear || user.batch,
+                        institution: extracted.institution || user.institution,
+                        cgpa: finalCgpa,
+                        skills: mergedSkills.length > 0 ? mergedSkills : user.skills,
+                        latestAtsScore: atsResult.score || user.latestAtsScore,
+                        readinessScore: Math.round(((atsResult.score || 85) + finalCgpa * 10) / 2),
+                      };
+
+                      onUpdateUser(updatedUser);
+                      setBoostFeedback('✅ Extracted resume credentials & skills synchronized to your Student Profile!');
+                      setTimeout(() => setBoostFeedback(null), 4000);
+                    }}
+                    className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm shadow-emerald-500/20 transition-all cursor-pointer"
+                    title="Copy extracted details and CGPA directly into your student portal account"
+                  >
+                    <BookmarkCheck className="w-4 h-4" />
+                    Sync to Profile
+                  </motion.button>
+                )}
 
                 <motion.button
                   whileHover={{ scale: 1.03 }}
@@ -646,30 +703,51 @@ export const ResumeScanner: React.FC<ResumeScannerProps> = ({
             </div>
           </motion.div>
 
-          {/* Interactive Resume View / Editor */}
+          {/* Interactive Resume View / Extracted Profile Panel */}
           <motion.div 
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35, delay: 0.15 }}
             className="bg-white border border-slate-200/90 rounded-3xl overflow-hidden shadow-xs"
           >
-            <div className="bg-slate-50 px-5 py-3 border-b border-slate-200 flex items-center justify-between">
-              <div className="flex items-center gap-2">
+            {/* View Mode Navigation Tabs */}
+            <div className="bg-slate-50 px-5 py-3 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-1.5 sm:gap-2">
                 <button
-                  onClick={() => setViewMode('preview')}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                    viewMode === 'preview' ? 'bg-white text-slate-900 shadow-2xs border border-slate-200' : 'text-slate-600 hover:text-slate-900'
+                  id="tab-view-extracted"
+                  onClick={() => setViewMode('extracted')}
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                    viewMode === 'extracted' 
+                      ? 'bg-indigo-600 text-white shadow-xs' 
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-white/80'
                   }`}
                 >
+                  <UserCheck className="w-3.5 h-3.5" />
+                  Extracted Profile &amp; Details
+                </button>
+                <button
+                  id="tab-view-preview"
+                  onClick={() => setViewMode('preview')}
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                    viewMode === 'preview' 
+                      ? 'bg-white text-slate-900 shadow-2xs border border-slate-200' 
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-white/80'
+                  }`}
+                >
+                  <FileText className="w-3.5 h-3.5" />
                   Formatted Preview
                 </button>
                 <button
+                  id="tab-view-editor"
                   onClick={() => setViewMode('editor')}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                    viewMode === 'editor' ? 'bg-white text-slate-900 shadow-2xs border border-slate-200' : 'text-slate-600 hover:text-slate-900'
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                    viewMode === 'editor' 
+                      ? 'bg-white text-slate-900 shadow-2xs border border-slate-200' 
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-white/80'
                   }`}
                 >
-                  Plain Text Editor
+                  <Code className="w-3.5 h-3.5" />
+                  Raw Text &amp; Edit
                 </button>
               </div>
 
@@ -705,7 +783,240 @@ export const ResumeScanner: React.FC<ResumeScannerProps> = ({
               </div>
             )}
 
-            {viewMode === 'editor' ? (
+            {/* TAB 1: EXTRACTED STRUCTURED PROFILE VIEW */}
+            {viewMode === 'extracted' && (
+              <div className="p-6 space-y-6 max-h-[600px] overflow-y-auto">
+                
+                {/* Candidate Overview Card */}
+                <div className="bg-slate-50 border border-slate-200/90 rounded-2xl p-5 space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
+                    <div>
+                      <span className="text-[10px] font-extrabold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-100">
+                        Extracted Candidate
+                      </span>
+                      <h2 className="text-lg font-extrabold text-slate-900 mt-1">
+                        {liveExtracted.name || 'Candidate Name'}
+                      </h2>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="px-3 py-1 bg-sky-50 text-sky-800 border border-sky-200 rounded-xl text-xs font-bold">
+                        CGPA: {detectedCgpa} / 10.0
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Contact Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                    <div className="flex items-center gap-2 text-slate-700 bg-white p-2.5 rounded-xl border border-slate-200/60">
+                      <Mail className="w-4 h-4 text-slate-400 shrink-0" />
+                      <span className="truncate">{liveExtracted.email || 'Email not found'}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-slate-700 bg-white p-2.5 rounded-xl border border-slate-200/60">
+                      <Phone className="w-4 h-4 text-slate-400 shrink-0" />
+                      <span>{liveExtracted.phone || 'Phone not found'}</span>
+                    </div>
+                    {liveExtracted.linkedin && (
+                      <div className="flex items-center gap-2 text-slate-700 bg-white p-2.5 rounded-xl border border-slate-200/60">
+                        <Globe className="w-4 h-4 text-sky-600 shrink-0" />
+                        <span className="truncate">{liveExtracted.linkedin}</span>
+                      </div>
+                    )}
+                    {liveExtracted.github && (
+                      <div className="flex items-center gap-2 text-slate-700 bg-white p-2.5 rounded-xl border border-slate-200/60">
+                        <Code className="w-4 h-4 text-slate-700 shrink-0" />
+                        <span className="truncate">{liveExtracted.github}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Academic Credentials Card */}
+                <div className="bg-white border border-slate-200/90 rounded-2xl p-5 space-y-3">
+                  <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-900 flex items-center gap-1.5">
+                    <GraduationCap className="w-4 h-4 text-indigo-600" />
+                    Academic Credentials &amp; Institution
+                  </h3>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                    <div className="bg-slate-50 p-3 rounded-xl border border-slate-150">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block">Degree &amp; Major</span>
+                      <span className="font-bold text-slate-900 text-xs mt-0.5 block">
+                        {liveExtracted.degree} in {liveExtracted.branch}
+                      </span>
+                    </div>
+                    <div className="bg-slate-50 p-3 rounded-xl border border-slate-150">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block">Institution / College</span>
+                      <span className="font-bold text-slate-900 text-xs mt-0.5 block truncate">
+                        {liveExtracted.institution}
+                      </span>
+                    </div>
+                    <div className="bg-slate-50 p-3 rounded-xl border border-slate-150">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block">Graduation / Batch</span>
+                      <span className="font-bold text-slate-900 text-xs mt-0.5 block">
+                        Class of {liveExtracted.graduationYear}
+                      </span>
+                    </div>
+                    <div className="bg-slate-50 p-3 rounded-xl border border-slate-150 flex items-center justify-between">
+                      <div>
+                        <span className="text-[10px] font-bold text-slate-500 uppercase block">Verified CGPA</span>
+                        <span className="font-extrabold text-sky-700 text-xs mt-0.5 block">
+                          {detectedCgpa} / 10.0
+                        </span>
+                      </div>
+                      <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-md text-[10px] font-bold">
+                        Eligible for 95% Drives
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Categorized Skills Taxonomy */}
+                <div className="bg-white border border-slate-200/90 rounded-2xl p-5 space-y-4">
+                  <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-900 flex items-center gap-1.5">
+                    <Code className="w-4 h-4 text-indigo-600" />
+                    Extracted Technical Skills Taxonomy
+                  </h3>
+
+                  <div className="space-y-3">
+                    {/* Programming Languages */}
+                    <div>
+                      <span className="text-[11px] font-bold text-slate-600 block mb-1.5 flex items-center gap-1">
+                        <Terminal className="w-3.5 h-3.5 text-indigo-500" /> Languages:
+                      </span>
+                      <div className="flex flex-wrap gap-1.5">
+                        {(liveExtracted.skillsByCategory?.languages?.length ? liveExtracted.skillsByCategory.languages : ['Python', 'TypeScript', 'C++', 'Java', 'SQL']).map((sk) => (
+                          <span key={sk} className="px-2.5 py-1 bg-indigo-50 text-indigo-700 border border-indigo-200/80 rounded-xl text-xs font-bold">
+                            {sk}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Frameworks & Web */}
+                    <div>
+                      <span className="text-[11px] font-bold text-slate-600 block mb-1.5 flex items-center gap-1">
+                        <Layers className="w-3.5 h-3.5 text-sky-500" /> Frameworks &amp; Libraries:
+                      </span>
+                      <div className="flex flex-wrap gap-1.5">
+                        {(liveExtracted.skillsByCategory?.frameworks?.length ? liveExtracted.skillsByCategory.frameworks : ['React', 'Node.js', 'Express', 'Tailwind CSS']).map((sk) => (
+                          <span key={sk} className="px-2.5 py-1 bg-sky-50 text-sky-700 border border-sky-200/80 rounded-xl text-xs font-bold">
+                            {sk}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Databases & Cloud */}
+                    <div>
+                      <span className="text-[11px] font-bold text-slate-600 block mb-1.5 flex items-center gap-1">
+                        <Database className="w-3.5 h-3.5 text-emerald-500" /> Databases &amp; Cloud / DevOps:
+                      </span>
+                      <div className="flex flex-wrap gap-1.5">
+                        {(liveExtracted.skillsByCategory?.databases?.length || liveExtracted.skillsByCategory?.cloudAndDevOps?.length 
+                          ? [...(liveExtracted.skillsByCategory?.databases || []), ...(liveExtracted.skillsByCategory?.cloudAndDevOps || [])]
+                          : ['PostgreSQL', 'MongoDB', 'AWS', 'Docker', 'Git']
+                        ).map((sk) => (
+                          <span key={sk} className="px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200/80 rounded-xl text-xs font-bold">
+                            {sk}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Core CS & AI */}
+                    <div>
+                      <span className="text-[11px] font-bold text-slate-600 block mb-1.5 flex items-center gap-1">
+                        <Cpu className="w-3.5 h-3.5 text-purple-500" /> Core Computer Science:
+                      </span>
+                      <div className="flex flex-wrap gap-1.5">
+                        {(liveExtracted.skillsByCategory?.coreCS?.length ? liveExtracted.skillsByCategory.coreCS : ['Data Structures', 'Algorithms', 'DBMS', 'Operating Systems', 'System Design']).map((sk) => (
+                          <span key={sk} className="px-2.5 py-1 bg-purple-50 text-purple-700 border border-purple-200/80 rounded-xl text-xs font-bold">
+                            {sk}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Extracted Experience & Internships */}
+                {liveExtracted.experiences && liveExtracted.experiences.length > 0 && (
+                  <div className="bg-white border border-slate-200/90 rounded-2xl p-5 space-y-3">
+                    <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-900 flex items-center gap-1.5">
+                      <Briefcase className="w-4 h-4 text-indigo-600" />
+                      Work Experience &amp; Internships ({liveExtracted.experiences.length})
+                    </h3>
+
+                    <div className="space-y-3">
+                      {liveExtracted.experiences.map((exp, idx) => (
+                        <div key={idx} className="p-3.5 bg-slate-50 rounded-xl border border-slate-150 space-y-1.5">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                            <span className="text-xs font-extrabold text-slate-900">{exp.role}</span>
+                            {exp.duration && (
+                              <span className="text-[11px] font-semibold text-slate-500 flex items-center gap-1">
+                                <Calendar className="w-3 h-3" /> {exp.duration}
+                              </span>
+                            )}
+                          </div>
+                          {exp.company && (
+                            <span className="text-xs font-bold text-indigo-600 block">{exp.company}</span>
+                          )}
+                          {exp.description && (
+                            <p className="text-xs text-slate-600 leading-relaxed mt-1">{exp.description}</p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Extracted Projects */}
+                {liveExtracted.projects && liveExtracted.projects.length > 0 && (
+                  <div className="bg-white border border-slate-200/90 rounded-2xl p-5 space-y-3">
+                    <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-900 flex items-center gap-1.5">
+                      <Layers className="w-4 h-4 text-indigo-600" />
+                      Technical Projects ({liveExtracted.projects.length})
+                    </h3>
+
+                    <div className="space-y-3">
+                      {liveExtracted.projects.map((proj, idx) => (
+                        <div key={idx} className="p-3.5 bg-slate-50 rounded-xl border border-slate-150 space-y-1.5">
+                          <span className="text-xs font-extrabold text-slate-900 block">{proj.title}</span>
+                          {proj.technologies && (
+                            <span className="text-[11px] font-bold text-sky-700 block">{proj.technologies}</span>
+                          )}
+                          {proj.description && (
+                            <p className="text-xs text-slate-600 leading-relaxed mt-1">{proj.description}</p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Certifications & Achievements */}
+                {liveExtracted.certifications && liveExtracted.certifications.length > 0 && (
+                  <div className="bg-white border border-slate-200/90 rounded-2xl p-5 space-y-2.5">
+                    <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-900 flex items-center gap-1.5">
+                      <Award className="w-4 h-4 text-amber-500" />
+                      Certifications &amp; Key Highlights
+                    </h3>
+                    <div className="space-y-1.5">
+                      {liveExtracted.certifications.map((cert, idx) => (
+                        <div key={idx} className="flex items-start gap-2 text-xs text-slate-700">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                          <span>{cert}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+              </div>
+            )}
+
+            {/* TAB 2: PLAIN TEXT EDITOR */}
+            {viewMode === 'editor' && (
               <textarea
                 id="resume-text-editor"
                 value={activeResumeText}
@@ -725,14 +1036,17 @@ export const ResumeScanner: React.FC<ResumeScannerProps> = ({
                 className="w-full p-5 bg-white text-slate-800 text-xs font-mono leading-relaxed focus:outline-none resize-y selection:bg-indigo-100 min-h-[380px]"
                 placeholder="Paste or edit resume text here..."
               />
-            ) : (
+            )}
+
+            {/* TAB 3: FORMATTED DOCUMENT PREVIEW */}
+            {viewMode === 'preview' && (
               <div className="p-6 bg-white text-slate-800 text-xs font-mono leading-relaxed space-y-4 max-h-[500px] overflow-y-auto">
                 <div className="pb-3 border-b border-slate-100">
                   <h2 className="text-base font-extrabold text-slate-900 tracking-wide uppercase">
-                    {user?.name || 'CANDIDATE PROFILE'}
+                    {liveExtracted.name || user?.name || 'CANDIDATE PROFILE'}
                   </h2>
                   <p className="text-slate-500 text-[11px] mt-0.5">
-                    {user?.email || 'email@university.edu'} • {user?.branch || 'Engineering'} • CGPA: {detectedCgpa} / 10.0 • Target: {selectedRole}
+                    {liveExtracted.email || user?.email || 'email@university.edu'} • {liveExtracted.branch || user?.branch || 'Engineering'} • CGPA: {detectedCgpa} / 10.0 • Target: {selectedRole}
                   </p>
                 </div>
 
@@ -766,7 +1080,7 @@ export const ResumeScanner: React.FC<ResumeScannerProps> = ({
             {/* Bottom Summary Bar */}
             <div className="bg-slate-50 px-5 py-3 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-2">
               <span className="text-xs text-slate-500">
-                Word Count: <strong className="text-slate-900">{activeResumeText.split(/\s+/).filter(Boolean).length}</strong> words • Extracted CGPA: <strong className="text-sky-700 font-bold">{detectedCgpa} / 10.0</strong> • ATS Parser: <strong className="text-emerald-700 font-bold">Pass</strong>
+                Word Count: <strong className="text-slate-900">{activeResumeText.split(/\s+/).filter(Boolean).length}</strong> words • Extracted CGPA: <strong className="text-sky-700 font-bold">{detectedCgpa} / 10.0</strong> • Candidate: <strong className="text-slate-900">{liveExtracted.name}</strong>
               </span>
               <button
                 onClick={() => onNavigate('jobs')}

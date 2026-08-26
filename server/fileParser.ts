@@ -19,27 +19,45 @@ export async function parseDocumentBuffer(
   if (mimetype === 'application/pdf' || lowerName.endsWith('.pdf')) {
     try {
       const pdfModule: any = await import('pdf-parse');
-      const pdf = pdfModule.default || pdfModule;
-      const data = await pdf(buffer);
-      const text = (data.text || '').trim();
-      return {
-        text,
-        fileName: originalFilename,
-        fileType: 'pdf',
-        wordCount: text.split(/\s+/).filter(Boolean).length,
-      };
+      let text = '';
+
+      if (pdfModule.PDFParse) {
+        // pdf-parse v2 class API
+        const parser = new pdfModule.PDFParse({ data: buffer });
+        const result = await parser.getText();
+        text = (result?.text || '').trim();
+      } else if (typeof pdfModule === 'function') {
+        const data = await pdfModule(buffer);
+        text = (data?.text || '').trim();
+      } else if (typeof pdfModule.default === 'function') {
+        const data = await pdfModule.default(buffer);
+        text = (data?.text || '').trim();
+      }
+
+      // Clean extracted PDF text (remove page marker headers like "-- 1 of 1 --")
+      text = text.replace(/--\s*\d+\s+of\s+\d+\s*--/gi, '').trim();
+
+      if (text.length > 0) {
+        return {
+          text,
+          fileName: originalFilename,
+          fileType: 'pdf',
+          wordCount: text.split(/\s+/).filter(Boolean).length,
+        };
+      }
     } catch (err: any) {
-      console.warn('[PDF Parser] Standard extraction warning, falling back to raw buffer string scan:', err?.message);
-      // Fallback text extraction for damaged/non-standard PDF stream
-      const rawText = buffer.toString('utf-8').replace(/[^\x20-\x7E\n\r\t]/g, ' ');
-      const clean = rawText.replace(/\s+/g, ' ').slice(0, 20000).trim();
-      return {
-        text: clean.length > 50 ? clean : 'Candidate Resume Content (Extracted from PDF)',
-        fileName: originalFilename,
-        fileType: 'pdf',
-        wordCount: clean.split(/\s+/).filter(Boolean).length,
-      };
+      console.warn('[PDF Parser] Standard extraction warning, falling back to stream parsing:', err?.message);
     }
+
+    // Fallback stream extraction for non-standard PDF formats
+    const rawText = buffer.toString('utf-8').replace(/[^\x20-\x7E\n\r\t]/g, ' ');
+    const clean = rawText.replace(/\s+/g, ' ').slice(0, 25000).trim();
+    return {
+      text: clean.length > 50 ? clean : 'Candidate Resume Content (Extracted from PDF)',
+      fileName: originalFilename,
+      fileType: 'pdf',
+      wordCount: clean.split(/\s+/).filter(Boolean).length,
+    };
   }
 
   // 2. DOCX Word File parsing

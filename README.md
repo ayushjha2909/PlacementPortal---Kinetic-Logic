@@ -1,31 +1,42 @@
 # PlacementPortal 🎓💼
 ### Next-Generation Campus Placement Readiness & Recruitment Intelligence Platform
 
-PlacementPortal is a full-stack campus recruitment and placement readiness management system. It bridges the gap between student candidates and institutional Training & Placement Officers (TPO) through intelligent ATS resume optimization, multi-platform competitive programming aggregation, AI mock interview simulations, company-specific placement mentorship, automated job matching, and real-time recruitment drive administration.
+PlacementPortal is a full-stack campus recruitment and placement readiness management platform. It bridges the gap between student candidates and institutional Training & Placement Officers (TPO) through intelligent ATS resume parsing, structured credential extraction, multi-platform competitive programming aggregation, AI mock interview simulations, company-specific placement mentorship, automated job matching, and real-time recruitment drive administration.
 
 ---
 
 ## ✨ Key Capabilities & Modules
 
 ### 👨‍🎓 1. Student Candidate Portal
-- **ATS Resume Scanner & Keyword Optimizer**:
-  - Live document parser supporting PDF, DOCX, TXT, and Markdown files.
-  - Multi-dimensional scoring across readability, formatting, keyword density, and quantified impact.
-  - AI-powered section rewrite suggestions and instant PDF readiness report generation.
+- **Intelligent ATS Resume Scanner & Comprehensive Data Extractor**:
+  - **Live Document Parsing**: Upload and extract clean text from PDF, DOCX, TXT, and Markdown files.
+  - **Structured Credential Extraction**: Deterministic and AI extraction of candidate **Name, Email, Phone, Degree, Branch/Major, Institution, Graduation Batch, and exact CGPA/GPA**.
+  - **Categorized Technical Skills Taxonomy**: Automatically classifies technical skills into *Languages, Frameworks, Databases, Cloud & DevOps, and Core CS (DSA, DBMS, OS, System Design)*.
+  - **Experience & Project Recognition**: Extracts company names, job titles, tenures, descriptions, and technical project stacks.
+  - **Interactive Extracted Profile View**: Switch between *Extracted Profile & Details*, *Formatted Document Preview*, and *Raw Text Editor*.
+  - **One-Click Profile Sync**: Automatically synchronize extracted resume details, verified CGPA, and technical skills directly into your student portal account.
+  - **ATS Compatibility Scoring**: Multi-dimensional scoring across readability, formatting, keyword density, and quantified impact with actionable improvement suggestions.
+
 - **Multi-Platform Coding Profile Aggregator**:
-  - Unifies handles across **LeetCode**, **CodeChef**, **Codeforces**, **GeeksforGeeks**, **HackerRank**, and **Coding Ninjas**.
-  - Calculates aggregated DSA problem counts, platform percentiles, contest ratings, and topic readiness.
+  - Unifies competitive programming handles across **LeetCode**, **CodeChef**, **Codeforces**, **GeeksforGeeks**, **HackerRank**, and **Coding Ninjas**.
+  - Aggregates DSA problem counts, platform percentiles, contest ratings, and topic readiness.
+
 - **Interactive Coding Sandbox**:
   - In-browser code runner with multiple programming language options (C++, Java, Python, JavaScript).
   - Built-in test cases, time/space complexity estimations, and automated solution verification.
+
 - **AI Mock Interview Simulator**:
   - Realistic technical and HR/behavioral mock interview scenarios with voice and text responses.
   - Granular post-interview evaluations across technical depth, communication, and problem-solving.
+
 - **RAG-Grounded AI Placement Mentor**:
   - Interactive career coach trained on tier-1 hiring patterns, system design questions, and DSA interview roadmaps.
+
 - **Recruiter Radar & Campus Job Matcher**:
   - Automated job recommendations matched against student CGPA, skills, branch, and coding rank.
-  - One-click application tracking with eligibility validation.
+  - One-click application tracking with eligibility validation and deadline alerts.
+
+---
 
 ### 🏛️ 2. Training & Placement Officer (TPO) Command Center
 - **Executive Cohort Analytics**:
@@ -50,6 +61,42 @@ PlacementPortal is a full-stack campus recruitment and placement readiness manag
 - **Document & File Parsers**: `pdf-parse`, `mammoth` (DOCX extraction)
 - **Icons & Visuals**: [Lucide React](https://lucide.dev/), [Motion](https://motion.dev/)
 - **Build System**: [Vite](https://vitejs.dev/) + [esbuild](https://esbuild.github.io/)
+
+---
+
+## 📁 Project Structure
+
+```
+placement-portal/
+├── src/
+│   ├── components/            # React UI components & sub-views
+│   │   ├── CodingAggregator.tsx # Multi-platform coding stats aggregator
+│   │   ├── CodingPlayground.tsx # In-browser code runner & sandbox
+│   │   ├── Dashboard.tsx      # Student & TPO central dashboard
+│   │   ├── DossierModal.tsx   # Verified candidate profile dossier
+│   │   ├── DriveManager.tsx   # Campus placement drive administration
+│   │   ├── JobListings.tsx    # Campus job board & application flow
+│   │   ├── MockInterview.tsx  # AI technical & HR mock interview
+│   │   ├── PlacementMentor.tsx # AI placement advisor & chat
+│   │   ├── ResumeScanner.tsx  # ATS resume scanner & extractor UI
+│   │   ├── StudentProfile.tsx # Student profile, credentials & skills
+│   │   └── TPODashboard.tsx   # Placement officer analytics & audit
+│   ├── data/                  # Mock data, preset resumes & seed items
+│   ├── utils/                 # Client utilities & resumeExtractor.ts
+│   ├── types.ts               # TypeScript data models & schemas
+│   ├── App.tsx                # Main application component & routing
+│   └── main.tsx               # Application entry point
+├── server/
+│   ├── fileParser.ts          # PDF & DOCX binary text parser
+│   ├── resumeExtractor.ts     # Deterministic & regex resume extractor
+│   ├── security.ts            # Input sanitization & rate limiting
+│   └── gemini.ts              # Server-side Gemini AI integration
+├── server.ts                  # Express server & API routes
+├── .env.example               # Environment variables template
+├── metadata.json              # Platform metadata & permissions
+├── package.json               # Dependencies & build scripts
+└── vite.config.ts             # Vite configuration
+```
 
 ---
 
@@ -97,6 +144,12 @@ PlacementPortal is a full-stack campus recruitment and placement readiness manag
    ```
    Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+5. **Build for Production**:
+   ```bash
+   npm run build
+   npm start
+   ```
+
 ---
 
 ## 📡 API Reference Overview
@@ -104,12 +157,13 @@ PlacementPortal is a full-stack campus recruitment and placement readiness manag
 | Endpoint | Method | Description |
 | :--- | :--- | :--- |
 | `/api/health` | `GET` | Health check and server readiness probe |
-| `/api/parse-resume-file` | `POST` | Uploads and extracts text from PDF / DOCX / TXT resumes |
-| `/api/ai/resume-scanner` | `POST` | AI-powered ATS scoring, keyword extraction, and suggestions |
+| `/api/resume/upload` | `POST` | Uploads and extracts text + structured info from PDF/DOCX resumes |
+| `/api/parse-resume-file` | `POST` | Binary parser for uploaded resume documents |
+| `/api/ai/resume-scanner` | `POST` | AI-powered ATS scoring, keyword extraction, and structured parsing |
 | `/api/ai/mentor-chat` | `POST` | RAG-grounded placement mentor conversation engine |
 | `/api/ai/mock-interview/start` | `POST` | Generates role-specific mock interview questions |
 | `/api/ai/mock-interview/evaluate` | `POST` | Evaluates candidate answer and returns rubric scoring |
-| `/api/coding-profiles/aggregate` | `POST` | Aggregates DSA metrics across competitive programming sites |
+| `/api/coding-profiles/aggregate` | `POST` | Aggregates DSA metrics across competitive programming platforms |
 | `/api/notifications` | `GET` | Retrieves active campus drive alerts and notifications |
 | `/api/drives` | `GET` / `POST` | Lists or creates campus recruitment drives (TPO) |
 | `/api/auth/log` | `POST` | Logs user sign-in/sign-out events to audit storage |
@@ -117,15 +171,15 @@ PlacementPortal is a full-stack campus recruitment and placement readiness manag
 
 ---
 
-## 🔒 Security & Performance Guidelines
+## 🔒 Security & Performance Highlights
 
-1. **Server-Side AI Gateway**: API keys are strictly contained within server-side endpoints and never exposed to the client.
-2. **Dynamic Lazy Loading**: Binary parsers (PDF and Word document processors) are loaded on-demand to guarantee instant server boot times.
-3. **Resilient Data Strategy**: Features run with automated database synchronization and graceful offline/memory fallbacks.
-4. **WCAG AA Compliance**: High-contrast, legible typography, focus states, and responsive touch targets across all viewport sizes.
+1. **Server-Side Secret Containment**: All AI keys and sensitive configurations remain strictly on the backend.
+2. **Deterministic Fallbacks**: Resume parsing, skill classification, and CGPA extraction operate deterministically even when external API limits are encountered.
+3. **Lazy-Loaded Document Parsers**: PDF and Word parsers are loaded dynamically to ensure sub-second application startup times.
+4. **WCAG AA Compliance**: High-contrast typography, accessible color scales, full keyboard navigation, and responsive touch targets.
 
 ---
 
 ## 📜 License
 
-This project is released under the MIT License.
+This project is licensed under the MIT License.

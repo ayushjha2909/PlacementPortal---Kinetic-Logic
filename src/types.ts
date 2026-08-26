@@ -28,6 +28,42 @@ export interface AuthResponse {
   message?: string;
 }
 
+export interface ExtractedExperience {
+  role?: string;
+  company?: string;
+  duration?: string;
+  description?: string;
+}
+
+export interface ExtractedProject {
+  title?: string;
+  technologies?: string[];
+  description?: string;
+}
+
+export interface ExtractedResumeInfo {
+  name?: string;
+  email?: string;
+  phone?: string;
+  linkedin?: string;
+  github?: string;
+  degree?: string;
+  branch?: string;
+  institution?: string;
+  graduationYear?: string;
+  cgpa?: number;
+  skillsByCategory?: {
+    languages?: string[];
+    frameworks?: string[];
+    databases?: string[];
+    cloudAndDevOps?: string[];
+    coreCS?: string[];
+  };
+  experiences?: ExtractedExperience[];
+  projects?: ExtractedProject[];
+  certifications?: string[];
+}
+
 export interface ATSScoreBreakdown {
   formattingReadability: number;
   keywordOptimization: number;
@@ -52,7 +88,13 @@ export interface ATSScanResult {
   summaryFeedback: string;
   extractedCgpa?: number;
   candidateName?: string;
+  candidateEmail?: string;
+  candidatePhone?: string;
   candidateBranch?: string;
+  candidateDegree?: string;
+  candidateInstitution?: string;
+  candidateGraduationYear?: string;
+  extractedInfo?: ExtractedResumeInfo;
 }
 
 export interface CompanyDrive {
