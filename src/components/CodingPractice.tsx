@@ -718,7 +718,7 @@ export const CodingPractice: React.FC<CodingPracticeProps> = ({ user }) => {
                 <div className="bg-white border border-slate-200/90 rounded-3xl overflow-hidden shadow-xs">
                   
                   {/* Top Toolbar */}
-                  <div className="bg-slate-50 px-5 py-3 border-b border-slate-200 flex items-center justify-between">
+                  <div className="bg-slate-50 px-4 sm:px-5 py-3 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2.5">
                     <div className="flex items-center gap-2">
                       <select
                         id="select-code-language"
@@ -731,17 +731,17 @@ export const CodingPractice: React.FC<CodingPracticeProps> = ({ user }) => {
                       </select>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       <motion.button
                         whileHover={{ scale: 1.03 }}
                         whileTap={{ scale: 0.97 }}
                         id="btn-ai-code-review"
                         onClick={handleRequestAiReview}
                         disabled={isAiEvaluating}
-                        className="px-3.5 py-1.5 bg-white hover:bg-slate-50 text-indigo-600 border border-indigo-200 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
+                        className="px-3.5 py-1.5 bg-white hover:bg-slate-50 text-indigo-600 border border-indigo-200 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer min-h-[34px]"
                       >
                         <Sparkles className="w-3.5 h-3.5" />
-                        AI Code Review
+                        AI Review
                       </motion.button>
 
                       <motion.button
@@ -749,7 +749,7 @@ export const CodingPractice: React.FC<CodingPracticeProps> = ({ user }) => {
                         whileTap={{ scale: 0.97 }}
                         id="btn-run-code"
                         onClick={handleRunCode}
-                        className="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm shadow-indigo-500/20 transition-colors cursor-pointer"
+                        className="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm shadow-indigo-500/20 transition-colors cursor-pointer min-h-[34px]"
                       >
                         <Play className="w-3.5 h-3.5 fill-current" />
                         Run Code

@@ -711,43 +711,43 @@ export const ResumeScanner: React.FC<ResumeScannerProps> = ({
             className="bg-white border border-slate-200/90 rounded-3xl overflow-hidden shadow-xs"
           >
             {/* View Mode Navigation Tabs */}
-            <div className="bg-slate-50 px-5 py-3 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2">
-              <div className="flex items-center gap-1.5 sm:gap-2">
+            <div className="bg-slate-50 px-4 sm:px-5 py-3 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2.5">
+              <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar py-0.5 max-w-full">
                 <button
                   id="tab-view-extracted"
                   onClick={() => setViewMode('extracted')}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                  className={`px-3 sm:px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
                     viewMode === 'extracted' 
                       ? 'bg-indigo-600 text-white shadow-xs' 
                       : 'text-slate-600 hover:text-slate-900 hover:bg-white/80'
                   }`}
                 >
                   <UserCheck className="w-3.5 h-3.5" />
-                  Extracted Profile &amp; Details
+                  Extracted Profile
                 </button>
                 <button
                   id="tab-view-preview"
                   onClick={() => setViewMode('preview')}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                  className={`px-3 sm:px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
                     viewMode === 'preview' 
                       ? 'bg-white text-slate-900 shadow-2xs border border-slate-200' 
                       : 'text-slate-600 hover:text-slate-900 hover:bg-white/80'
                   }`}
                 >
                   <FileText className="w-3.5 h-3.5" />
-                  Formatted Preview
+                  Preview
                 </button>
                 <button
                   id="tab-view-editor"
                   onClick={() => setViewMode('editor')}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                  className={`px-3 sm:px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
                     viewMode === 'editor' 
                       ? 'bg-white text-slate-900 shadow-2xs border border-slate-200' 
                       : 'text-slate-600 hover:text-slate-900 hover:bg-white/80'
                   }`}
                 >
                   <Code className="w-3.5 h-3.5" />
-                  Raw Text &amp; Edit
+                  Raw Editor
                 </button>
               </div>
 

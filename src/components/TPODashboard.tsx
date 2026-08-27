@@ -255,9 +255,9 @@ export const TPODashboard: React.FC<TPODashboardProps> = ({
       {/* TPO Administrative Bento Header */}
       <div 
         id="tpo-header-banner"
-        className="bg-white border border-slate-200/90 rounded-3xl p-6 sm:p-7 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-6"
+        className="bg-white border border-slate-200/90 rounded-3xl p-4 sm:p-6 lg:p-7 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 sm:gap-6"
       >
-        <div className="flex items-start sm:items-center gap-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3.5 sm:gap-4 w-full md:w-auto">
           <motion.button
             type="button"
             id="btn-admin-avatar-edit"
@@ -270,7 +270,7 @@ export const TPODashboard: React.FC<TPODashboardProps> = ({
             <img
               src={adminUser.avatar}
               alt={adminUser.name}
-              className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover border-2 border-indigo-600 shadow-md shadow-indigo-500/20 group-hover:opacity-90 transition-opacity"
+              className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl object-cover border-2 border-indigo-600 shadow-md shadow-indigo-500/20 group-hover:opacity-90 transition-opacity"
             />
             <div className="absolute inset-0 bg-slate-900/30 rounded-2xl opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-white">
               <Camera className="w-5 h-5 drop-shadow-sm" />
@@ -280,12 +280,12 @@ export const TPODashboard: React.FC<TPODashboardProps> = ({
             </span>
           </motion.button>
 
-          <div>
+          <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
-              <h1 className="text-xl font-black text-slate-900 tracking-tight">{adminUser.name}</h1>
+              <h1 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight">{adminUser.name}</h1>
               <span className="px-2.5 py-0.5 bg-indigo-50 text-indigo-700 border border-indigo-200 text-xs font-bold rounded-full flex items-center gap-1">
                 <Lock className="w-3 h-3 text-indigo-600" />
-                TPO Director Session
+                TPO Director
               </span>
               {onOpenProfileModal && (
                 <button
@@ -304,31 +304,31 @@ export const TPODashboard: React.FC<TPODashboardProps> = ({
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full md:w-auto">
           <button
             onClick={() => setCreateDriveModalOpen(true)}
-            className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl text-xs font-bold flex items-center gap-2 shadow-sm shadow-emerald-500/20 active:scale-95 transition-all cursor-pointer"
+            className="flex-1 sm:flex-none px-3.5 sm:px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl text-xs font-bold flex items-center justify-center gap-2 shadow-sm shadow-emerald-500/20 active:scale-95 transition-all cursor-pointer min-h-[40px]"
           >
             <PlusCircle className="w-4 h-4" />
-            Post New Campus Drive
+            Post Drive
           </button>
 
           <button
             id="btn-tpo-generate-shortlist"
             onClick={() => setShortlistModalOpen(true)}
-            className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-xs font-bold flex items-center gap-2 shadow-sm shadow-indigo-500/20 active:scale-95 transition-all cursor-pointer"
+            className="flex-1 sm:flex-none px-3.5 sm:px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-xs font-bold flex items-center justify-center gap-2 shadow-sm shadow-indigo-500/20 active:scale-95 transition-all cursor-pointer min-h-[40px]"
           >
             <Sparkles className="w-4 h-4" />
-            Recruiter Shortlist Engine
+            Shortlist Engine
           </button>
 
           <button
             id="btn-tpo-export-report"
             onClick={onOpenReport}
-            className="px-4 py-2.5 bg-white text-slate-700 hover:text-slate-900 border border-slate-200 hover:border-slate-300 rounded-2xl text-xs font-bold flex items-center gap-1.5 active:scale-95 transition-all shadow-2xs cursor-pointer"
+            className="flex-1 sm:flex-none px-3.5 sm:px-4 py-2.5 bg-white text-slate-700 hover:text-slate-900 border border-slate-200 hover:border-slate-300 rounded-2xl text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition-all shadow-2xs cursor-pointer min-h-[40px]"
           >
             <Download className="w-4 h-4 text-indigo-600" />
-            Export TPO Report
+            Export Report
           </button>
         </div>
       </div>

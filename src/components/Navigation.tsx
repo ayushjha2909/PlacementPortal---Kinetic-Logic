@@ -112,14 +112,15 @@ export const Navigation: React.FC<NavigationProps> = ({
     <>
       {/* Top Navigation Bar */}
       <header className="sticky top-0 z-40 w-full bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-[0_1px_3px_0_rgba(0,0,0,0.02)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3 sm:gap-4">
           
           {/* Logo & Brand */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <button 
               id="btn-mobile-menu-toggle"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="lg:hidden p-2 text-slate-500 hover:text-slate-900 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer"
+              aria-label="Toggle navigation menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -127,17 +128,17 @@ export const Navigation: React.FC<NavigationProps> = ({
             <button 
               id="brand-logo-btn"
               onClick={() => setCurrentTab(user.role === 'admin' ? 'tpo' : 'dashboard')} 
-              className="flex items-center gap-2.5 group text-left transition-transform duration-200 hover:opacity-90 active:scale-[0.98] cursor-pointer"
+              className="flex items-center gap-2 sm:gap-2.5 group text-left transition-transform duration-200 hover:opacity-90 active:scale-[0.98] cursor-pointer"
             >
-              <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-black text-xs shadow-xs group-hover:bg-indigo-700 transition-all">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-black text-xs shadow-xs group-hover:bg-indigo-700 transition-all shrink-0">
                 KP
               </div>
-              <div>
-                <span className="font-bold text-sm tracking-tight text-slate-900 flex items-center gap-1.5">
+              <div className="min-w-0">
+                <span className="font-bold text-xs sm:text-sm tracking-tight text-slate-900 flex items-center gap-1.5 truncate">
                   Placement Hub
                 </span>
-                <span className="text-[11px] text-slate-500 block -mt-0.5 font-medium">
-                  {user.role === 'admin' ? 'TPO Institutional Portal' : 'Student Career Readiness'}
+                <span className="text-[10px] sm:text-[11px] text-slate-500 block -mt-0.5 font-medium truncate">
+                  {user.role === 'admin' ? 'TPO Portal' : 'Career Readiness'}
                 </span>
               </div>
             </button>
@@ -160,7 +161,7 @@ export const Navigation: React.FC<NavigationProps> = ({
           </div>
 
           {/* Right Action Icons & Profile */}
-          <div className="flex items-center gap-2.5 sm:gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-3">
             
             {/* Active Role Indicator Badge */}
             <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs shadow-2xs">
@@ -196,7 +197,7 @@ export const Navigation: React.FC<NavigationProps> = ({
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 8, scale: 0.98 }}
                     transition={{ duration: 0.15 }}
-                    className="absolute right-0 mt-2 w-80 sm:w-96 bg-white border border-slate-200 rounded-2xl shadow-xl p-4 z-50 space-y-3"
+                    className="absolute right-0 mt-2 w-[calc(100vw-24px)] max-w-sm sm:w-96 bg-white border border-slate-200 rounded-2xl shadow-xl p-4 z-50 space-y-3"
                   >
                     <div className="flex items-center justify-between pb-2.5 border-b border-slate-100">
                       <div className="flex items-center gap-2">
@@ -287,7 +288,7 @@ export const Navigation: React.FC<NavigationProps> = ({
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 8, scale: 0.98 }}
                     transition={{ duration: 0.15 }}
-                    className="absolute right-0 mt-2 w-64 bg-white border border-slate-200 rounded-2xl shadow-lg p-3.5 z-50"
+                    className="absolute right-0 mt-2 w-[calc(100vw-24px)] max-w-xs sm:w-64 bg-white border border-slate-200 rounded-2xl shadow-lg p-3.5 z-50"
                   >
                     <div className="pb-3 border-b border-slate-100 mb-2.5">
                       <p className="text-xs font-bold text-slate-900">{user.name}</p>
@@ -373,8 +374,8 @@ export const Navigation: React.FC<NavigationProps> = ({
       </header>
 
       {/* Main Navigation Tab Bar with Clean Modern Tabs */}
-      <nav className="bg-white border-b border-slate-200 px-4 sm:px-6 lg:px-8 shadow-[0_1px_2px_0_rgba(0,0,0,0.01)]">
-        <div className="max-w-7xl mx-auto flex items-center justify-between overflow-x-auto no-scrollbar gap-2 py-1.5">
+      <nav className="bg-white border-b border-slate-200 px-3 sm:px-6 lg:px-8 shadow-[0_1px_2px_0_rgba(0,0,0,0.01)]">
+        <div className="max-w-7xl mx-auto flex items-center justify-between overflow-x-auto no-scrollbar gap-2 py-1.5 scroll-smooth">
           <div className="flex items-center gap-1 sm:gap-1.5">
             {visibleNavItems.map((item) => {
               const Icon = item.icon;

@@ -217,11 +217,11 @@ export const MockInterviews: React.FC<MockInterviewsProps> = ({ user }) => {
 
         <div className="flex flex-wrap items-center gap-3">
           {/* Track Selector */}
-          <div className="flex items-center bg-slate-50 border border-slate-200 rounded-2xl p-1 shadow-2xs">
+          <div className="flex items-center bg-slate-50 border border-slate-200 rounded-2xl p-1 shadow-2xs overflow-x-auto no-scrollbar max-w-full">
             <button
               id="btn-track-behavioral"
               onClick={() => { setTrack('behavioral'); setCurrentQuestionIndex(0); setResult(null); }}
-              className={`px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all duration-200 cursor-pointer ${
+              className={`px-3 sm:px-3.5 py-1.5 text-xs font-bold rounded-xl whitespace-nowrap transition-all duration-200 cursor-pointer ${
                 track === 'behavioral' ? 'bg-indigo-600 text-white shadow-2xs' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -230,7 +230,7 @@ export const MockInterviews: React.FC<MockInterviewsProps> = ({ user }) => {
             <button
               id="btn-track-technical"
               onClick={() => { setTrack('technical'); setCurrentQuestionIndex(0); setResult(null); }}
-              className={`px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all duration-200 cursor-pointer ${
+              className={`px-3 sm:px-3.5 py-1.5 text-xs font-bold rounded-xl whitespace-nowrap transition-all duration-200 cursor-pointer ${
                 track === 'technical' ? 'bg-sky-600 text-white shadow-2xs' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -239,7 +239,7 @@ export const MockInterviews: React.FC<MockInterviewsProps> = ({ user }) => {
             <button
               id="btn-track-system"
               onClick={() => { setTrack('system_design'); setCurrentQuestionIndex(0); setResult(null); }}
-              className={`px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all duration-200 cursor-pointer ${
+              className={`px-3 sm:px-3.5 py-1.5 text-xs font-bold rounded-xl whitespace-nowrap transition-all duration-200 cursor-pointer ${
                 track === 'system_design' ? 'bg-purple-600 text-white shadow-2xs' : 'text-slate-600 hover:text-slate-900'
               }`}
             >

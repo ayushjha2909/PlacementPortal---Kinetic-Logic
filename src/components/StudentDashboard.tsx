@@ -117,10 +117,10 @@ export const StudentDashboard: React.FC<StudentDashboardProps> = ({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.25 }}
         id="student-hero-banner"
-        className="relative overflow-hidden rounded-2xl bg-white border border-slate-200 p-6 sm:p-7 shadow-[0_1px_3px_0_rgba(0,0,0,0.02)] transition-all duration-200 hover:border-slate-300"
+        className="relative overflow-hidden rounded-2xl bg-white border border-slate-200 p-4 sm:p-6 lg:p-7 shadow-[0_1px_3px_0_rgba(0,0,0,0.02)] transition-all duration-200 hover:border-slate-300"
       >
-        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-          <div className="flex items-start sm:items-center gap-4">
+        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-5 sm:gap-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3.5 sm:gap-4 w-full md:w-auto">
             <motion.button 
               type="button"
               id="btn-student-avatar-edit"
@@ -133,7 +133,7 @@ export const StudentDashboard: React.FC<StudentDashboardProps> = ({
               <img
                 src={user.avatar}
                 alt={user.name}
-                className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl object-cover border-2 border-indigo-500/80 shadow-xs group-hover:opacity-90 transition-opacity"
+                className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl object-cover border-2 border-indigo-500/80 shadow-xs group-hover:opacity-90 transition-opacity"
               />
               <div className="absolute inset-0 bg-slate-900/30 rounded-xl opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-white">
                 <Camera className="w-5 h-5 drop-shadow-sm" />
@@ -143,9 +143,9 @@ export const StudentDashboard: React.FC<StudentDashboardProps> = ({
               </span>
             </motion.button>
 
-            <div>
+            <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
-                <h1 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
+                <h1 className="text-base sm:text-xl font-bold text-slate-900 tracking-tight">
                   Welcome back, {user.name}
                 </h1>
                 <span className={`px-2.5 py-0.5 border text-xs font-semibold rounded-full flex items-center gap-1 ${eligibilityTier.color}`}>
@@ -164,7 +164,7 @@ export const StudentDashboard: React.FC<StudentDashboardProps> = ({
                 )}
               </div>
               
-              <div className="flex flex-wrap items-center gap-y-1 gap-x-3.5 mt-1.5 text-xs text-slate-600">
+              <div className="flex flex-wrap items-center gap-y-1 gap-x-3 mt-1.5 text-xs text-slate-600">
                 <span className="flex items-center gap-1.5 font-medium text-slate-700">
                   <GraduationCap className="w-3.5 h-3.5 text-indigo-600" />
                   {user.branch}
@@ -183,7 +183,7 @@ export const StudentDashboard: React.FC<StudentDashboardProps> = ({
               whileTap={{ scale: 0.98 }}
               id="btn-quick-ats-scan"
               onClick={() => onNavigate('resume')}
-              className="flex-1 md:flex-none px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-semibold hover:bg-indigo-700 transition-all flex items-center justify-center gap-2 shadow-xs cursor-pointer"
+              className="flex-1 sm:flex-none px-3.5 sm:px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-semibold hover:bg-indigo-700 transition-all flex items-center justify-center gap-2 shadow-xs cursor-pointer min-h-[38px]"
             >
               <FileText className="w-3.5 h-3.5" />
               Scan Resume
@@ -193,7 +193,7 @@ export const StudentDashboard: React.FC<StudentDashboardProps> = ({
               whileTap={{ scale: 0.98 }}
               id="btn-quick-mock"
               onClick={() => onNavigate('mock')}
-              className="flex-1 md:flex-none px-4 py-2 bg-white text-slate-700 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-2 shadow-2xs cursor-pointer"
+              className="flex-1 sm:flex-none px-3.5 sm:px-4 py-2 bg-white text-slate-700 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-2 shadow-2xs cursor-pointer min-h-[38px]"
             >
               <Mic className="w-3.5 h-3.5 text-indigo-600" />
               Start Mock
@@ -203,7 +203,7 @@ export const StudentDashboard: React.FC<StudentDashboardProps> = ({
               whileTap={{ scale: 0.96 }}
               id="btn-download-readiness"
               onClick={onOpenReport}
-              className="px-3 py-2 bg-white text-slate-600 border border-slate-200 rounded-xl text-xs font-medium hover:text-slate-900 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-2xs cursor-pointer"
+              className="px-3 py-2 bg-white text-slate-600 border border-slate-200 rounded-xl text-xs font-medium hover:text-slate-900 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-2xs cursor-pointer min-h-[38px]"
               title="Download Readiness Summary"
             >
               <Download className="w-3.5 h-3.5" />

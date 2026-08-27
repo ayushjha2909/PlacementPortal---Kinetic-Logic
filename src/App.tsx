@@ -233,7 +233,7 @@ export default function App() {
           />
 
           {/* Main Content View Container */}
-          <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+          <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
             <AnimatePresence mode="wait">
               {/* Admin Dashboard: Rendered when user is Admin */}
               {user.role === 'admin' ? (
@@ -393,7 +393,7 @@ export default function App() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 15, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="fixed bottom-6 right-6 z-50 bg-white border border-slate-200 text-slate-800 px-4 py-3 rounded-2xl shadow-xl shadow-slate-900/10 flex items-center gap-3"
+            className="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 left-4 sm:left-auto max-w-sm z-50 bg-white border border-slate-200 text-slate-800 px-4 py-3 rounded-2xl shadow-xl shadow-slate-900/10 flex items-center gap-3"
           >
             <div className="w-6 h-6 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center shrink-0">
               <CheckCircle2 className="w-4 h-4" />
